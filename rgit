@@ -1,0 +1,43 @@
+#!/bin/bash
+
+usage () {
+  echo "usage: rgit <directory> <command> [<args>]"
+  echo "  directory      Directory to begin recursively searching for git repositories"
+  echo "  command        See git commands"
+  echo "  args           See git args"
+  exit 1
+}
+
+# display usage if less than 2 arguments provided
+if [  $# -le 1 ] 
+  then 
+    usage
+  exit 1
+fi 
+
+# display usage if help option is specified
+if [[ ( $# == "--help") ||  $# == "-h" ]] 
+  then 
+    usage
+  exit 0
+fi 
+
+# get full path to the starting directory
+wd=$(readlink -m $1)
+
+# make sure the first argument is a directory
+if [ ! -d "$wd" ]; then
+  echo "$1 is not a directory"
+  exit 1
+fi
+
+# annoying workaround to get the parameter expansion to work properly within the parallel call
+# simply doing "${@:2}" didn't seem to work
+git_args=()
+for git_cmd in "${@:2}"; do
+  git_args+="'$git_cmd' "
+done
+
+# find all git repos underneath starting directory and call whatever git command was passed to each one (in parallel)
+find $wd -type d -name '.git' | \
+  parallel --no-notice "echo -e '\e[34m{.}\e[0m'; git -c color.ui=always --git-dir={} --work-tree={.} $git_args; echo -e ''"
