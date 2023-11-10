@@ -14,7 +14,7 @@ rgit takes one argument (the starting directory) and passes all other arguments 
 `rgit . log --committer=<user@mail.com>`
 
 # Installation
-1. Install GNU parallel (e.g. `sudo apt-get install parallel` 
+1. Install GNU parallel (e.g. `sudo apt-get install parallel`)
 2. Copy file `rgit` executable to `/usr/local/bin` and mark it executable `sudo chmod +x /usr/local/bin/rgit`
 
 # TODO
